@@ -1,59 +1,68 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>RRG · Gráfico de Rotação Relativa — Marcelo Wizenberg</title>
-<meta name="description" content="Gráfico de Rotação Relativa (RRG) interativo com dados reais de setores, ações e FIIs do Brasil e dos EUA. Projeto educativo de Marcelo Wizenberg.">
-<meta property="og:title" content="RRG · Gráfico de Rotação Relativa"><meta property="og:description" content="Quem está ganhando força contra o mercado? Setores, ações e FIIs do Brasil e dos EUA, atualizados diariamente."><meta property="og:url" content="https://celowiz.github.io/rrg/"><meta name="theme-color" content="#050506">
+<meta name="description" content="Gráfico de Rotação Relativa (RRG) interativo com dados reais de setores, ações, FIIs, países, fatores, commodities e moedas. Projeto educativo de Marcelo Wizenberg.">
+<meta property="og:type" content="website"><meta property="og:title" content="RRG · Quem está ganhando força contra o mercado?"><meta property="og:description" content="Gráfico de Rotação Relativa interativo com dados reais, atualizado diariamente. Projeto educativo."><meta property="og:url" content="https://celowiz.github.io/rrg/"><meta property="og:image" content="https://celowiz.github.io/rrg/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="pt_BR"><meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="RRG · Quem está ganhando força contra o mercado?"><meta name="twitter:description" content="Gráfico de Rotação Relativa interativo com dados reais. Projeto educativo."><meta name="twitter:image" content="https://celowiz.github.io/rrg/og.png">
+<meta name="theme-color" content="#050506">
 <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png"><link rel="icon" href="favicon.ico" sizes="any"><link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/v2.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QCBFGR39WG"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QCBFGR39WG',{content_group:'rrg'});</script>
 </head><body>
 <nav><a class="logo" href="https://celowiz.github.io/"><span class="mw">m<b>w</b></span><span>Marcelo Wizenberg</span></a>
-<div class="l"><a href="https://celowiz.github.io/">Portfólio</a><a href="https://celowiz.github.io/monitor-b3/">Monitor B3</a><a href="https://celowiz.github.io/quant-notebooks/">Quant Notebooks</a><a class="on" href="./">RRG</a></div></nav>
-<header class="hero"><div class="eyebrow">Projeto · Relative Rotation Graph</div>
-<h1>Quem está ganhando força<br>contra o mercado?</h1>
-<p class="lead">O RRG mostra, num só plano, a <em>força relativa</em> de cada ativo frente a um benchmark (eixo X) e o <em>ritmo</em> dessa força (eixo Y). Os ativos tendem a girar no sentido horário entre os quatro quadrantes. Ferramenta educativa, não é recomendação de investimento.</p>
+<div class="l"><a href="https://celowiz.github.io/" data-i18n="portfolio">Portfólio</a><a href="https://celowiz.github.io/monitor-b3/">Monitor B3</a><a href="https://celowiz.github.io/quant-notebooks/">Quant Notebooks</a><a class="on" href="./">RRG</a></div>
+<div class="navr"><button class="btn sm" id="tourBtn" data-i18n="tourbtn">Tour</button><div class="seg sm" id="lang"><button class="on" data-l="pt">PT</button><button data-l="en">EN</button></div></div></nav>
+<header class="hero"><div class="eyebrow" data-i18n="eyebrow">Projeto · Relative Rotation Graph</div>
+<h1 data-i18n="h1">Quem está ganhando força<br>contra o mercado?</h1>
+<p class="lead" data-i18n="lead"></p>
 <div class="status" id="status">Carregando dados…</div></header>
 <section class="toolbar">
  <div class="presets" id="presets"></div>
  <div class="free" id="free" hidden>
-  <div class="field"><label class="lbl" for="freeIn">Ativos (até 15)</label><div class="chips" id="freeChips"></div><input id="freeIn" placeholder="Buscar por ticker ou nome… (ex.: PETR4, ouro, Japão)" list="tickers" autocomplete="off"><datalist id="tickers"></datalist></div>
-  <div class="field"><label class="lbl" for="freeBench">Benchmark</label><select id="freeBench"></select></div>
+  <div class="field"><label class="lbl" for="freeIn" data-i18n="assets15">Ativos (até 15)</label><div class="chips" id="freeChips"></div><input id="freeIn" data-i18n-ph="search" placeholder="Buscar por ticker ou nome…" list="tickers" autocomplete="off"><datalist id="tickers"></datalist></div>
+  <div class="field"><label class="lbl" for="freeBench" data-i18n="bench">Benchmark</label><select id="freeBench"></select></div>
  </div>
  <div class="ctrls">
-  <div class="seg" id="tf"><button class="on" data-v="w">Semanal</button><button data-v="d">Diário</button></div>
-  <label class="lbl">Rastro <b id="trailV">10</b><input type="range" id="trail" min="4" max="26" value="10" aria-label="tamanho do rastro"></label>
-  <label class="lbl">Suavização <b id="smoothV">10</b><input type="range" id="smooth" min="5" max="26" value="10" aria-label="janela de suavização"></label>
+  <div class="seg" id="tf"><button class="on" data-v="w" data-i18n="weekly">Semanal</button><button data-v="d" data-i18n="daily">Diário</button></div>
+  <label class="lbl"><span data-i18n="trail">Rastro</span> <b id="trailV">10</b><input type="range" id="trail" min="4" max="26" value="10"></label>
+  <label class="lbl"><span data-i18n="smooth">Suavização</span> <b id="smoothV">10</b><input type="range" id="smooth" min="5" max="26" value="10"></label>
   <button class="btn" id="share">🔗 Link</button><button class="btn" id="png">⬇ PNG</button>
  </div>
 </section>
 <main class="grid">
+ <div class="maincol">
  <div class="card chartcard">
-  <p class="pdesc" id="presetDesc"></p><div class="charthead"><div><span class="eyebrow" id="presetName"></span><div class="ill" id="benchName"></div></div><div class="ill" id="dateLbl"></div></div>
-  <svg id="rrg" viewBox="0 0 720 620" role="img" aria-label="Gráfico de rotação relativa"></svg>
-  <p class="note" id="empty" hidden>Adicione ao menos um ativo para ver o gráfico.</p>
-  <div class="timeline"><button class="play" id="play" aria-label="reproduzir">▶</button><input type="range" id="time" min="0" max="100" value="100" aria-label="data"><span class="ill" id="timeLbl"></span><button class="btn sm" id="replay">↻ Redesenhar rastro</button></div>
+  <p class="pdesc" id="presetDesc"></p>
+  <div class="charthead"><div><span class="eyebrow" id="presetName"></span><div class="ill" id="benchName"></div></div><div class="ill" id="dateLbl"></div></div>
+  <svg id="rrg" viewBox="0 0 720 620" role="img" aria-label="RRG"></svg>
+  <p class="note" id="empty" hidden></p>
+  <div class="timeline"><button class="play" id="play" aria-label="play">▶</button><input type="range" id="time" min="0" max="100" value="100"><label class="datebox"><span class="ill" id="gotoL">Ir para data</span><input type="date" id="dateIn"></label><span class="ill" id="timeLbl" hidden></span><button class="btn sm" id="replay" data-i18n="replay">↻ Redesenhar rastro</button></div>
+  <div class="hist"><span class="lbl" id="histT">Momentos históricos</span><div id="moments"></div></div>
+  <p class="mcap" id="mcap" hidden></p>
   <div class="legend" id="legend"></div>
   <div id="tip" class="tip" hidden></div>
  </div>
+ <section class="method card">
+  <div class="eyebrow" data-i18n="method">Como é calculado</div>
+  <div class="mcols"><p data-i18n="m1"></p><p data-i18n="m2"></p><p data-i18n="m3"></p><p data-i18n="m4"></p></div>
+ </section>
+ </div>
  <aside class="side">
-  <div class="card"><div class="eyebrow">Tabela de rotação</div>
-   <table id="tbl"><thead><tr><th>Ativo</th><th>Quadrante</th><th title="períodos no quadrante atual" id="unitH">Sem.</th><th title="direção do último movimento">Rumo</th><th title="tamanho do último passo">Vel.</th><th title="distância do centro (100,100)">Dist.</th></tr></thead><tbody></tbody></table></div>
-  <div class="card" id="detail"><div class="eyebrow">Detalhe</div><p class="ill" id="detailHint">Clique em um ativo no gráfico ou na tabela.</p>
-   <div id="detailBody" hidden><h3 id="dName"></h3><div class="ill">PREÇO (base 100)</div><svg id="dPrice" viewBox="0 0 320 90"></svg><div class="ill">FORÇA RELATIVA vs BENCHMARK (base 100)</div><svg id="dRs" viewBox="0 0 320 90"></svg><p class="note" id="dNote"></p></div></div>
-  <div class="card"><div class="eyebrow">Como ler</div>
-   <ul class="howto"><li><i style="background:#2dd4bf"></i><b>Liderança</b>: força relativa alta e subindo.</li><li><i style="background:#facc15"></i><b>Enfraquecimento</b>: ainda forte, mas perdendo ritmo.</li><li><i style="background:#f87171"></i><b>Defasagem</b>: fraco e perdendo ritmo.</li><li><i style="background:#60a5fa"></i><b>Melhora</b>: fraco, mas ganhando ritmo.</li></ul>
-   <p class="note">Neste conjunto, o tempo médio que um ativo ficou num mesmo quadrante foi de <b id="avgQ">—</b>.</p></div>
+  <div class="card" id="changes"><div class="eyebrow" id="chT">O que mudou esta semana</div><div class="ill" id="chDate"></div><div id="chList"></div><div class="ill" id="chHint"></div></div>
+  <div class="card" id="detail"><div class="eyebrow" data-i18n="detail">Detalhe</div><p class="ill" id="detailHint"></p>
+   <div id="detailBody" hidden><h3 id="dName"></h3><div class="dstats" id="dStats"></div>
+    <div class="ill" data-dl="det_ratio"></div><svg id="dRatio"></svg>
+    <div class="ill" data-dl="det_mom"></div><svg id="dMom"></svg>
+    <div class="ill" data-dl="det_px"></div><svg id="dPx"></svg><div class="pxleg" id="dPxLeg"></div>
+    <p class="note" id="dNote"></p></div></div>
+  <div class="card"><div class="eyebrow" data-i18n="tbl">Tabela de rotação</div>
+   <table id="tbl"><thead><tr><th data-i18n="th_asset">Ativo</th><th data-i18n="th_q">Quadrante</th><th id="unitH">Sem.</th><th data-i18n="th_head">Rumo</th><th data-i18n="th_spd">Vel.</th><th data-i18n="th_dist">Dist.</th></tr></thead><tbody></tbody></table></div>
+  <div class="card"><div class="eyebrow" data-i18n="howto">Como ler</div>
+   <ul class="howto"><li><i style="background:#2dd4bf"></i><span data-i18n="how_L"></span></li><li><i style="background:#facc15"></i><span data-i18n="how_W"></span></li><li><i style="background:#f87171"></i><span data-i18n="how_G"></span></li><li><i style="background:#60a5fa"></i><span data-i18n="how_I"></span></li></ul>
+   <p class="note"><span data-i18n="avg"></span> <b id="avgQ">—</b>.</p></div>
  </aside>
 </main>
-<section class="method">
- <div class="eyebrow">Como é calculado</div>
- <div class="mcols">
-  <p><b>Força relativa.</b> Para cada data dividimos o preço do ativo pelo do benchmark. Se a linha sobe, o ativo está indo melhor que a referência.</p>
-  <p><b>RS-Ratio (eixo X).</b> Compara essa força relativa com a sua própria média móvel e normaliza o resultado em torno de 100. Acima de 100, a força relativa está acima da tendência recente.</p>
-  <p><b>RS-Momentum (eixo Y).</b> Mede a velocidade de variação do RS-Ratio, também normalizada em torno de 100. Acima de 100, a força relativa está acelerando.</p>
-  <p><b>Limites.</b> O RRG descreve o passado e não prevê preços. Rotações podem parar ou inverter a qualquer momento. Usamos uma aproximação pública do método de Julius de Kempenaer, não a fórmula proprietária.</p>
- </div>
-</section>
-<footer>Conteúdo educativo. Não constitui recomendação de investimento. Dados com possíveis atrasos ou falhas das fontes. RRG® é marca registrada da RRG Research; esta é uma implementação independente. · <a href="https://celowiz.github.io/">← Voltar ao portfólio</a></footer>
+<footer><span data-i18n="footer"></span> · <a href="https://celowiz.github.io/" data-i18n="back">← Voltar ao portfólio</a></footer>
+<div id="tour" class="tour" hidden><div class="tourbox card" id="tourBox"></div></div>
 <div id="toast" class="toast" hidden></div>
-<script src="js/rrg.js"></script><script src="js/app.js"></script></body></html>
+<script src="js/rrg.js"></script><script src="js/app.js"></script><script src="js/v2.js"></script></body></html>

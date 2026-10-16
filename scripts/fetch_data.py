@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from universe import *
 from rrg import geometric_basket
 
-START = dt.date.today() - dt.timedelta(days=365 * 4 + 30)
+START = dt.date(2018, 7, 1)  # mock v2: histórico estendido para cobrir Covid (mar/2020)
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "data")
 B3_URL = "https://sistemaswebb3-listados.b3.com.br/indexStatisticsProxy/IndexCall/GetPortfolioDay/"
 
@@ -82,6 +82,10 @@ def main():
     # 3) alinhamento por calendário unificado (ffill limitado, sem preencher antes do início)
     idx = sorted(set().union(*[set(pd.to_datetime(s.index).date) for s in series.values()]))
     idx = [d for d in idx if d.weekday() < 5 and d >= START]
+    # descarta o dia corrente antes do fechamento (≈18:30 BRT): evita publicar preços intradiários
+    now_brt = dt.datetime.now(dt.timezone(dt.timedelta(hours=-3)))
+    if idx and idx[-1] >= now_brt.date() and (now_brt.hour, now_brt.minute) < (18, 30):
+        idx = [d for d in idx if d < now_brt.date()]
     # descarta datas finais com cobertura < 50% (ex.: dia corrente só com moedas/cripto)
     raw_dates = [set(pd.to_datetime(s.index).date) for s in series.values()]
     while idx and sum(idx[-1] in r for r in raw_dates) < 0.5 * len(raw_dates):
@@ -104,9 +108,13 @@ def main():
             nm, ds = NAMES[t]
             if "substituto" in info[t]["name"]: nm += " " + info[t]["name"][info[t]["name"].index("(substituto"):]
             info[t]["name"], info[t]["desc"] = nm, ds
+        if t in NAMES_EN:
+            info[t]["name_en"], info[t]["desc_en"] = NAMES_EN[t]
     presets = []
     for p in PRESETS:
-        q = dict(p); q["assets"] = [a for a in p["assets"] if a in out]
+        q = dict(p)
+        if p["id"] in PRESETS_EN: q["name_en"], q["desc_en"] = PRESETS_EN[p["id"]]
+        q["assets"] = [a for a in p["assets"] if a in out]
         missing = [a for a in p["assets"] if a not in out]
         if missing: notes.append(f"{p['name']}: sem dados para {', '.join(missing)}")
         if p["bench"] in out: presets.append(q)

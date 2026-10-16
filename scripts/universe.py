@@ -179,3 +179,62 @@ for _t, _n in BR_STOCKS.items():
     NAMES[_t] = (_n, "Ação brasileira" + (" (unit)" if _t.endswith("11") else ""))
 for _t, _n in US_STOCKS.items():
     NAMES[_t] = (_n, "Ação americana")
+
+# ---------------------------------------------------------------------------
+# Versão em inglês (toggle EN). Ações individuais reutilizam o nome da empresa.
+NAMES_EN = {
+    "IBOV": ("Ibovespa", "Brazil's main stock index (B3)"), "IFNC": ("B3 Financials Index", "Banks, insurers and financial services"),
+    "IMAT": ("B3 Basic Materials Index", "Mining, steel, pulp and chemicals"), "ICON": ("B3 Consumer Index", "Retail, food, beverages and consumer"),
+    "IEEX": ("B3 Electric Power Index", "Power generation, transmission and distribution"), "UTIL": ("B3 Utilities Index", "Power, water and gas"),
+    "IMOB": ("B3 Real Estate Index", "Homebuilders, developers and malls"), "INDX": ("B3 Industrials Index", "Industrial and capital goods companies"),
+    "IFIX": ("IFIX · Brazilian REITs Index", "Index of real estate funds (FIIs) listed on B3"), "SMLL": ("B3 Small Caps Index", "Smaller Brazilian companies"),
+    "IDIV": ("B3 Dividend Index", "High-dividend Brazilian stocks"), "^GSPC": ("S&P 500 (index)", "500 largest US companies, price only"),
+    "^IXIC": ("Nasdaq Composite", "Nasdaq-listed stocks, tech heavy"), "^DJI": ("Dow Jones", "30 large US blue chips"),
+    "BOVA11": ("Ibovespa ETF", "Tracks the Ibovespa"), "SMAL11": ("Brazil Small Caps ETF", "Tracks B3 Small Caps"),
+    "IVVB11": ("S&P 500 ETF in BRL", "S&P 500 priced in reais (includes FX)"), "XFIX11": ("IFIX ETF", "Tracks the IFIX"),
+    "SPY": ("S&P 500 · US stocks", "S&P 500 ETF (total return)"), "QQQ": ("Nasdaq-100", "100 largest non-financial Nasdaq stocks"),
+    "IWM": ("US small caps (Russell 2000)", "Size factor: smaller US companies"), "EFA": ("Developed ex-US stocks", "Europe, Japan and Pacific (MSCI EAFE)"),
+    "EEM": ("Emerging markets stocks", "China, India, Taiwan, Brazil and others"), "GLD": ("Gold", "Physical gold ETF"),
+    "TLT": ("US Treasuries 20+ years", "Long-term US rates"), "EWZ": ("Brazil stocks (USD)", "MSCI Brazil in dollars"),
+    "URTH": ("MSCI World (developed markets)", "Stocks from 23 developed countries"), "ACWI": ("MSCI ACWI (all world)", "Developed and emerging markets"),
+    "EWJ": ("Japan stocks", "MSCI Japan, USD"), "MCHI": ("China stocks", "MSCI China, USD"), "INDA": ("India stocks", "MSCI India, USD"),
+    "EWG": ("Germany stocks", "MSCI Germany, USD"), "EWU": ("UK stocks", "MSCI UK, USD"), "EWC": ("Canada stocks", "MSCI Canada, USD"),
+    "EWA": ("Australia stocks", "MSCI Australia, USD"), "EWY": ("South Korea stocks", "MSCI Korea, USD"), "EWT": ("Taiwan stocks", "MSCI Taiwan, USD"),
+    "EWW": ("Mexico stocks", "MSCI Mexico, USD"), "AOR": ("Global 60/40 portfolio", "60% global stocks / 40% bonds (iShares)"),
+    "VEU": ("Global ex-US stocks", "All regions except the US"), "LQD": ("US investment-grade credit", "High-quality corporate bonds"),
+    "GSG": ("Commodities (S&P GSCI)", "Futures basket, energy heavy"), "VNQ": ("US real estate (REITs)", "US real estate investment trusts"),
+    "UUP": ("US dollar (DXY)", "Dollar vs euro, yen, pound and others"), "BTC-USD": ("Bitcoin", "Bitcoin in dollars"),
+    "MTUM": ("Momentum factor (US)", "Stocks with the strongest 6–12 month gains"), "VLUE": ("Value factor (US)", "Cheap stocks vs earnings, sales and book"),
+    "IWF": ("Growth factor (US)", "Russell 1000 growth companies"), "QUAL": ("Quality factor (US)", "High profitability, stable earnings, low debt"),
+    "USMV": ("Minimum volatility factor (US)", "Lower-volatility stock portfolio"), "SCHD": ("Dividend factor (US)", "High, consistent dividend payers"),
+    "DBC": ("Diversified commodities", "Energy, metals and agriculture futures"), "USO": ("WTI crude oil", "Oil futures (roll cost)"),
+    "UNG": ("Natural gas", "US natural gas futures"), "SLV": ("Silver", "Physical silver ETF"), "CPER": ("Copper", "Copper futures"),
+    "DBA": ("Agriculture", "Agricultural futures basket"), "CORN": ("Corn", "Corn futures"), "WEAT": ("Wheat", "Wheat futures"),
+    "PICK": ("Global miners", "Metals mining stocks"), "BRL": ("Brazilian real", "Value of 1 BRL in USD"), "EUR": ("Euro", "Value of 1 EUR in USD"),
+    "JPY": ("Japanese yen", "Value of 1 JPY in USD"), "GBP": ("British pound", "Value of 1 GBP in USD"), "MXN": ("Mexican peso", "Value of 1 MXN in USD"),
+    "CNY": ("Chinese yuan", "Value of 1 CNY in USD"), "AUD": ("Australian dollar", "Value of 1 AUD in USD"), "CAD": ("Canadian dollar", "Value of 1 CAD in USD"),
+    "CHF": ("Swiss franc", "Value of 1 CHF in USD"), "FXBASKET": ("Synthetic currency basket", "Equal-weight geometric mean of the currencies' USD values"),
+}
+_SPDR_EN = {"XLK": "technology", "XLF": "financials", "XLE": "energy", "XLV": "health care", "XLY": "consumer discretionary",
+            "XLP": "consumer staples", "XLI": "industrials", "XLB": "materials", "XLU": "utilities", "XLRE": "real estate", "XLC": "communication"}
+for _t, _n in _SPDR_EN.items():
+    NAMES_EN[_t] = (f"US {_n} sector", f"SPDR S&P 500 {_n} sector ETF")
+for _t, _n in FIIS.items():
+    NAMES_EN[_t] = (f"REIT {_n}", "Brazilian real estate fund (FII) on B3")
+for _t, _n in BR_STOCKS.items():
+    NAMES_EN[_t] = (_n.replace(" ON", " (common)").replace(" PN", " (preferred)"), "Brazilian stock" + (" (unit)" if _t.endswith("11") else ""))
+for _t, _n in US_STOCKS.items():
+    NAMES_EN[_t] = (_n, "US stock")
+
+PRESETS_EN = {
+    "setbr": ("Brazil sectors × Ibovespa", "B3 sector indices vs the Ibovespa: financials, materials, consumer, power, utilities, real estate and industrials."),
+    "acbr": ("Brazil stocks × Ibovespa", "Liquid Brazilian large caps vs the Ibovespa (units treated as stocks). Prices adjusted for dividends."),
+    "fii": ("Brazilian REITs × IFIX", "Brick and paper real estate funds vs the IFIX, prices adjusted for distributions."),
+    "spx": ("S&P stocks × S&P 500", "US mega caps vs the S&P 500 (SPY, total return)."),
+    "setus": ("US sectors × S&P 500", "The 11 SPDR sector ETFs vs the S&P 500, the classic RRG use case."),
+    "paises": ("Countries × MSCI World", "Country equity ETFs in USD vs MSCI World (URTH). Returns include each currency's move vs the dollar."),
+    "classes": ("Asset classes × 60/40", "Stocks, long bonds, credit, gold, commodities, real estate, dollar and bitcoin vs a global 60/40 portfolio (AOR). Bitcoin uses BTC-USD because IBIT has a short history."),
+    "fatores": ("US factors × S&P 500", "Factors explain part of returns: <b>Momentum</b> (MTUM), <b>Value</b> (VLUE), <b>Growth</b> (IWF), <b>Quality</b> (QUAL), <b>Minimum volatility</b> (USMV), <b>Size</b> (IWM) and <b>Dividends</b> (SCHD)."),
+    "commod": ("Commodities × DBC", "Energy, metals and agriculture ETFs vs a diversified basket (DBC). Futures-based ETFs suffer from roll costs."),
+    "moedas": ("Currencies × synthetic basket", "Each currency's value in USD vs an equal-weight <b>synthetic basket</b> (geometric mean, rebalanced daily). Carry is not included."),
+}
