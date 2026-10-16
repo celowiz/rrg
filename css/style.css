@@ -48,3 +48,11 @@ a.logo{text-decoration:none}
 .method{padding:12px 56px 32px}.mcols{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:12px}.mcols p{font-size:13.5px;line-height:1.6;color:var(--mut);margin:0}.mcols b{color:var(--paper);font-weight:500}
 footer a{color:var(--teal);text-decoration:none}
 @media(max-width:900px){.method{padding:12px 18px 28px}.mcols{grid-template-columns:1fr}}
+.pdesc{font-size:13px;line-height:1.6;color:var(--mut);margin:0 0 14px;max-width:820px}.pdesc b{color:var(--paper);font-weight:500}
+.nm{font:11px Inter,sans-serif;color:#71717a;letter-spacing:0;white-space:normal}
+.legend .nm{margin-left:4px}
+td .nm{margin-top:2px;max-width:150px}
+.dn{font:14px Inter,sans-serif;color:var(--paper);margin:2px 0 4px}
+.tip{white-space:normal;max-width:280px}
+.chips span{font-family:Inter,sans-serif}
+td{white-space:nowrap}

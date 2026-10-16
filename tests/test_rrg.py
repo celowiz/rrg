@@ -65,3 +65,30 @@ def test_fixture_for_js_parity():
                 assert (a is None and c is None) or math.isclose(a, c, rel_tol=1e-9)
     else:
         json.dump(fx, open(path, "w"))
+
+def test_geometric_basket():
+    from rrg import geometric_basket
+    b = geometric_basket([[1.0, 2.0, None], [4.0, 8.0, 1.0]])
+    assert math.isclose(b[0], 2.0) and math.isclose(b[1], 4.0) and b[2] is None
+    # cada moeda subindo 10% => cesta sobe 10%
+    b = geometric_basket([[1.0, 1.1], [0.5, 0.55], [2.0, 2.2]])
+    assert math.isclose(b[1] / b[0], 1.1)
+
+def test_basket_member_rs_neutral():
+    """Se todas as moedas andam juntas, a força relativa vs a cesta fica constante."""
+    from rrg import geometric_basket
+    a = [100 * 1.01 ** i for i in range(80)]
+    c = [50 * 1.01 ** i for i in range(80)]
+    bk = geometric_basket([a, c])
+    rs, x, y = rrg(a, bk, 10)
+    assert max(rs) - min(rs) < 1e-9 and math.isclose(x[-1], 100)
+
+def test_universe_names_and_presets():
+    import universe as U
+    for p in U.PRESETS:
+        assert p.get("desc"), p["id"]
+        for t in p["assets"] + [p["bench"]]:
+            assert t in U.NAMES, t
+            nm, ds = U.NAMES[t]
+            assert nm and ds
+    assert len({p["id"] for p in U.PRESETS}) == len(U.PRESETS) == 10

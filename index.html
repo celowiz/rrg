@@ -16,7 +16,7 @@
 <section class="toolbar">
  <div class="presets" id="presets"></div>
  <div class="free" id="free" hidden>
-  <div class="field"><label class="lbl" for="freeIn">Ativos (até 15)</label><div class="chips" id="freeChips"></div><input id="freeIn" placeholder="Buscar ticker… (ex.: PETR4, AAPL, XLK)" list="tickers" autocomplete="off"><datalist id="tickers"></datalist></div>
+  <div class="field"><label class="lbl" for="freeIn">Ativos (até 15)</label><div class="chips" id="freeChips"></div><input id="freeIn" placeholder="Buscar por ticker ou nome… (ex.: PETR4, ouro, Japão)" list="tickers" autocomplete="off"><datalist id="tickers"></datalist></div>
   <div class="field"><label class="lbl" for="freeBench">Benchmark</label><select id="freeBench"></select></div>
  </div>
  <div class="ctrls">
@@ -28,7 +28,7 @@
 </section>
 <main class="grid">
  <div class="card chartcard">
-  <div class="charthead"><div><span class="eyebrow" id="presetName"></span><div class="ill" id="benchName"></div></div><div class="ill" id="dateLbl"></div></div>
+  <p class="pdesc" id="presetDesc"></p><div class="charthead"><div><span class="eyebrow" id="presetName"></span><div class="ill" id="benchName"></div></div><div class="ill" id="dateLbl"></div></div>
   <svg id="rrg" viewBox="0 0 720 620" role="img" aria-label="Gráfico de rotação relativa"></svg>
   <p class="note" id="empty" hidden>Adicione ao menos um ativo para ver o gráfico.</p>
   <div class="timeline"><button class="play" id="play" aria-label="reproduzir">▶</button><input type="range" id="time" min="0" max="100" value="100" aria-label="data"><span class="ill" id="timeLbl"></span><button class="btn sm" id="replay">↻ Redesenhar rastro</button></div>

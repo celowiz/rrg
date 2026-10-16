@@ -2,11 +2,11 @@
 const $=s=>document.querySelector(s);
 const PAL=['#2dd4bf','#f472b6','#facc15','#60a5fa','#a78bfa','#fb923c','#4ade80','#f87171','#e879f9','#38bdf8','#fde047','#94a3b8'];
 const Q={L:{n:'Liderança',c:'#2dd4bf'},W:{n:'Enfraquecimento',c:'#facc15'},G:{n:'Defasagem',c:'#f87171'},I:{n:'Melhora',c:'#60a5fa'}};
-const GROUPS={idx_br:'Índices B3',br:'Ações Brasil',fii:'FIIs',us:'Ações EUA',sector_us:'Setores EUA (SPDR)',etf:'ETFs',idx_us:'Índices EUA'};
+const GROUPS={idx_br:'Índices B3',br:'Ações Brasil',fii:'FIIs',us:'Ações EUA',sector_us:'Setores EUA (SPDR)',etf:'ETFs',idx_us:'Índices EUA',country:'Países',asset:'Classes de ativos',factor:'Fatores EUA',commod:'Commodities',fx:'Moedas'};
 let D=null,META=null,PRESETS=[],N=156,DT=[],WE=[],DI=[];
 const st={p:null,tf:'w',trail:10,smooth:10,end:0,T:0,prog:0,fade:1,e:null,minEnd:0,hidden:new Set(),sel:null,playing:false,free:false,freeA:['PETR4','VALE3','WEGE3','ITUB4'],freeB:'IBOV'};
 const ga=(ev,p={})=>{try{window.gtag&&gtag('event',ev,{content_group:'rrg',...p})}catch(e){}};
-const name=t=>(META.info[t]||{}).name||t;
+const name=t=>(META.info[t]||{}).name||t,desc=t=>(META.info[t]||{}).desc||'';
 const bench=()=>st.free?st.freeB:st.p.bench;
 function compute(t){const idx=st.tf=='w'?WE:DI,a=D.series[t],b=D.series[bench()],p=idx.map(i=>a[i]),bb=idx.map(i=>b[i]),r=RRG.rrg(p,bb,st.smooth),off=idx.length-N;
  const o={t,price:p.slice(off),rs:r.rs.slice(off),x:r.x.slice(off),y:r.y.slice(off)};
@@ -66,21 +66,21 @@ function draw(){
 function stats(d){const i=st.end,q=quad(d.x[i],d.y[i]);let w=0;while(i-w>=0&&d.x[i-w]!=null&&quad(d.x[i-w],d.y[i-w])==q)w++;
  const dx=d.x[i]-d.x[i-1],dy=d.y[i]-d.y[i-1];return{q,w,ang:(Math.atan2(dy,dx)*180/Math.PI+360)%360,spd:Math.hypot(dx,dy),dist:Math.hypot(d.x[i]-100,d.y[i]-100)}}
 function tip(ev,t){const d=data.find(x=>x.t==t),s=stats(d),r=$('.chartcard').getBoundingClientRect(),el=$('#tip');
- el.innerHTML=`<b style="color:${d.c}">${t}</b> <span style="color:#a1a1aa">${name(t)}</span><br>${Q[s.q].n}<br>RS-Ratio ${d.x[st.end].toFixed(2)}<br>RS-Mom. ${d.y[st.end].toFixed(2)}<br>${s.w} ${st.tf=='w'?'sem.':'dias'} no quadrante`;
+ el.innerHTML=`<b style="color:${d.c}">${t} · ${name(t)}</b><br><span style="color:#71717a">${desc(t)}</span><br>${Q[s.q].n}<br>RS-Ratio ${d.x[st.end].toFixed(2)}<br>RS-Mom. ${d.y[st.end].toFixed(2)}<br>${s.w} ${st.tf=='w'?'sem.':'dias'} no quadrante`;
  el.hidden=false;el.style.left=(ev.clientX-r.left+14)+'px';el.style.top=(ev.clientY-r.top+14)+'px'}
 function table(){const u=st.tf=='w'?'':'d';
- $('#tbl tbody').innerHTML=data.filter(d=>!st.hidden.has(d.t)).map(d=>[d,stats(d)]).sort((a,b)=>b[1].dist-a[1].dist).map(([d,s])=>`<tr data-t="${d.t}" class="${st.sel==d.t?'sel':''}"><td style="color:${d.c}">${d.t}</td><td><span class="q"><i style="background:${Q[s.q].c}"></i>${Q[s.q].n}</span></td><td>${s.w}${u}</td><td><span class="arrow" style="transform:rotate(${-s.ang}deg)">➜</span> ${s.ang.toFixed(0)}°</td><td>${s.spd.toFixed(2)}</td><td>${s.dist.toFixed(2)}</td></tr>`).join('');
+ $('#tbl tbody').innerHTML=data.filter(d=>!st.hidden.has(d.t)).map(d=>[d,stats(d)]).sort((a,b)=>b[1].dist-a[1].dist).map(([d,s])=>`<tr data-t="${d.t}" class="${st.sel==d.t?'sel':''}"><td><span style="color:${d.c}">${d.t}</span><div class="nm">${name(d.t)}</div></td><td><span class="q"><i style="background:${Q[s.q].c}"></i>${Q[s.q].n}</span></td><td>${s.w}${u}</td><td><span class="arrow" style="transform:rotate(${-s.ang}deg)">➜</span> ${s.ang.toFixed(0)}°</td><td>${s.spd.toFixed(2)}</td><td>${s.dist.toFixed(2)}</td></tr>`).join('');
  document.querySelectorAll('#tbl tbody tr').forEach(r=>r.onclick=()=>select(r.dataset.t));
  // tempo médio em quadrante
  let runs=[];data.forEach(d=>{let q=null,c=0;for(let i=d.first;i<=st.end;i++){const k=quad(d.x[i],d.y[i]);if(k==q)c++;else{if(c)runs.push(c);q=k;c=1}}});
  $('#avgQ').textContent=runs.length?(runs.reduce((a,b)=>a+b,0)/runs.length).toFixed(1)+(st.tf=='w'?' semanas':' sessões'):'—'}
-function legend(){$('#legend').innerHTML=data.map(d=>`<button data-t="${d.t}" class="${st.hidden.has(d.t)?'off':''}"><i style="background:${d.c}"></i>${d.t}</button>`).join('');
+function legend(){$('#legend').innerHTML=data.map(d=>`<button data-t="${d.t}" class="${st.hidden.has(d.t)?'off':''}"><i style="background:${d.c}"></i>${d.t}<span class="nm">${name(d.t)}</span></button>`).join('');
  document.querySelectorAll('#legend button').forEach(b=>b.onclick=()=>{const t=b.dataset.t;ga('control_change',{control:'legend_toggle',value:t});st.hidden.has(t)?st.hidden.delete(t):st.hidden.add(t);if(st.sel==t)st.sel=null;legend();render()})}
 function spark(el,arr,c,base){const a=arr.slice(Math.max(0,st.end-52),st.end+1),mn=Math.min(...a),mx=Math.max(...a),X=i=>i/(a.length-1)*316+2,Y=v=>86-(v-mn)/(mx-mn||1)*80;
  el.innerHTML=`<line x1="0" x2="320" y1="${Y(base)}" y2="${Y(base)}" stroke="#3f3f46" stroke-dasharray="3 3"/><path d="${a.map((v,i)=>(i?'L':'M')+X(i)+','+Y(v)).join('')}" fill="none" stroke="${c}" stroke-width="1.8"/><circle cx="${X(a.length-1)}" cy="${Y(a[a.length-1])}" r="3" fill="${c}"/>`}
 function detail(){if(!st.sel){$('#detailBody').hidden=true;$('#detailHint').hidden=false;return}
  const d=data.find(x=>x.t==st.sel),s=stats(d);$('#detailBody').hidden=false;$('#detailHint').hidden=true;
- $('#dName').innerHTML=`<span style="color:${d.c}">${d.t}</span> <span class="ill">${name(d.t)} · vs ${name(bench())}</span>`;
+ $('#dName').innerHTML=`<span style="color:${d.c}">${d.t}</span> <div class="dn">${name(d.t)}</div><div class="ill">${desc(d.t)} · vs ${name(bench())}</div>`;
  const k=d.price[Math.max(0,st.end-52)];spark($('#dPrice'),d.price.map(v=>v/k*100),'#f4f1ea',100);const r0=d.rs[Math.max(0,st.end-52)];spark($('#dRs'),d.rs.map(v=>v/r0*100),d.c,100);
  $('#dNote').innerHTML=`Últimas 52 ${st.tf=='w'?'semanas':'sessões'}. Está em <b style="color:${Q[s.q].c}">${Q[s.q].n}</b> há ${s.w} ${st.tf=='w'?'semanas':'sessões'}, movendo-se a ${s.ang.toFixed(0)}°. Leitura descritiva, sem sinal de compra ou venda.`}
 function select(t){st.sel=st.sel==t?null:t;if(st.sel)ga('asset_highlight',{asset:t,preset:st.free?'free':st.p.id});render()}
@@ -89,7 +89,7 @@ function render(){draw();table();detail()}
 // ---------- animação contínua (rAF)
 let job=null,loop=null;
 function tick(now){let busy=false;
- if(job){const k=Math.min(1,(now-job.t0)/job.ms);job.step(ease(k),k);if(k>=1){const j=job;job=null;j.done&&j.done()}else busy=true}
+ if(job){const k=Math.min(1,(now-job.t0)/job.ms);job.step(ease(k),k);if(k>=1){const j=job;job=null;j.done&&j.done();if(job)busy=true}else busy=true}
  draw();if(Math.abs(st.e-domain())>.01)busy=true;
  loop=busy||st.playing?requestAnimationFrame(tick):null}
 function kick(){if(!loop)loop=requestAnimationFrame(tick)}
@@ -103,11 +103,11 @@ function crossfade(fn){if(RM){fn();return}anim(180,e=>st.fade=1-e,()=>{fn();})}
 // ---------- UI
 function presets(){$('#presets').innerHTML=PRESETS.map(p=>`<button class="chip ${!st.free&&st.p==p?'on':''}" data-id="${p.id}">${p.name}</button>`).join('')+`<button class="chip free-c ${st.free?'on':''}" data-id="free">＋ Modo livre</button>`;
  document.querySelectorAll('#presets .chip').forEach(b=>b.onclick=()=>{play(false);ga('preset_select',{preset:b.dataset.id});crossfade(()=>{if(b.dataset.id=='free')st.free=true;else{st.free=false;st.p=PRESETS.find(p=>p.id==b.dataset.id)}reset()})})}
-function freeUI(){$('#free').hidden=!st.free;$('#freeChips').innerHTML=st.freeA.map(t=>`<span title="${name(t)}">${t}<b data-t="${t}" aria-label="remover">×</b></span>`).join('');
+function freeUI(){$('#free').hidden=!st.free;$('#freeChips').innerHTML=st.freeA.map(t=>`<span title="${desc(t)}">${t} · ${name(t)}<b data-t="${t}" aria-label="remover">×</b></span>`).join('');
  document.querySelectorAll('#freeChips b').forEach(b=>b.onclick=()=>{st.freeA=st.freeA.filter(x=>x!=b.dataset.t);ga('control_change',{control:'free_remove',value:b.dataset.t});reset()});$('#freeBench').value=st.freeB}
 function reset(){st.playing=false;$('#play').textContent='▶';st.sel=null;st.hidden.clear();
  const idx=st.tf=='w'?WE:DI;N=Math.min(idx.length,st.tf=='w'?156:260);DT=idx.slice(idx.length-N).map(i=>D.dates[i]);
- presets();freeUI();$('#presetName').textContent=st.free?'Modo livre':st.p.name;$('#benchName').textContent='BENCHMARK: '+name(bench()).toUpperCase()+' ('+bench()+')';
+ presets();freeUI();$('#presetName').textContent=st.free?'Modo livre':st.p.name;$('#benchName').textContent='BENCHMARK: '+bench()+' · '+name(bench()).toUpperCase();$('#presetDesc').innerHTML=st.free?'Escolha ativos de qualquer grupo (ações, FIIs, ETFs, países, fatores, commodities, moedas) e um benchmark. A busca aceita ticker ou nome.':(st.p.desc||'');
  rebuild();st.minEnd=Math.min(N-1,Math.max(0,...data.map(d=>d.first))+st.trail);
  st.end=N-1;st.T=N-1;$('#time').max=N-1;$('#time').min=st.minEnd;$('#time').value=st.end;
  $('#unitH').textContent=st.tf=='w'?'Sem.':'Ses.';$('#empty').hidden=data.length>0;
@@ -119,10 +119,10 @@ function readHash(){const q=new URLSearchParams(location.hash.slice(1));if(!q.ge
 function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;setTimeout(()=>el.hidden=true,2400)}
 function bindUI(){
  const uni=Object.entries(META.info).sort((a,b)=>a[1].group.localeCompare(b[1].group)||a[0].localeCompare(b[0]));
- $('#tickers').innerHTML=uni.map(([t,i])=>`<option value="${t}">${i.name} · ${GROUPS[i.group]||''}</option>`).join('');
- const bopts=['IBOV','IFIX','SPY','^GSPC','^IXIC','BOVA11','IVVB11','SMLL','IDIV'].filter(t=>D.series[t]);
- $('#freeBench').innerHTML=bopts.map(t=>`<option value="${t}">${name(t)} (${t})</option>`).join('')+`<optgroup label="Outro ativo">${uni.filter(([t])=>!bopts.includes(t)).map(([t,i])=>`<option value="${t}">${t} · ${i.name}</option>`).join('')}</optgroup>`;
- $('#freeIn').onchange=e=>{const v=e.target.value.trim().toUpperCase().split(' ')[0];e.target.value='';
+ $('#tickers').innerHTML=uni.map(([t,i])=>`<option value="${t}" label="${t} · ${i.name} — ${GROUPS[i.group]||''}">${t} ${i.name} ${i.desc||''}</option>`).join('');
+ const bopts=['IBOV','IFIX','SPY','^GSPC','^IXIC','URTH','ACWI','AOR','DBC','FXBASKET','BOVA11','IVVB11','SMLL','IDIV'].filter(t=>D.series[t]);
+ $('#freeBench').innerHTML=bopts.map(t=>`<option value="${t}">${t} · ${name(t)}</option>`).join('')+`<optgroup label="Outro ativo">${uni.filter(([t])=>!bopts.includes(t)).map(([t,i])=>`<option value="${t}">${t} · ${i.name}</option>`).join('')}</optgroup>`;
+ $('#freeIn').onchange=e=>{let v=e.target.value.trim();e.target.value='';const vu=v.toUpperCase().split(' ')[0];if(D.series[vu])v=vu;else{const lo=v.toLowerCase(),E=Object.entries(META.info),hit=E.find(([t,i])=>i.name.toLowerCase().includes(lo))||E.find(([t,i])=>(i.desc||'').toLowerCase().includes(lo));v=hit?hit[0]:vu}
   if(!D.series[v]){toast(`"${v}" não está no universo disponível`);return}if(st.freeA.includes(v))return;if(st.freeA.length>=15){toast('Máximo de 15 ativos');return}
   st.freeA.push(v);ga('free_mode_add',{asset:v});reset()};
  $('#freeBench').onchange=e=>{st.freeB=e.target.value;ga('benchmark_change',{benchmark:st.freeB});reset()};

@@ -88,3 +88,11 @@ def weekly(dates, values):
             if v is not None or out_v[-1] is None:
                 out_v[-1] = v if v is not None else out_v[-1]
     return out_d, out_v
+
+def geometric_basket(columns):
+    """Cesta equal-weight rebalanceada a cada período: média geométrica dos valores.
+    columns: lista de séries alinhadas; None se faltar qualquer componente."""
+    out = []
+    for vals in zip(*columns):
+        out.append(None if any(v is None or v <= 0 for v in vals) else math.exp(sum(math.log(v) for v in vals) / len(vals)))
+    return out
