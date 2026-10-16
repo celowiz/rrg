@@ -1,0 +1,11 @@
+import { createRequire } from 'module'; import assert from 'assert'; import fs from 'fs';
+const require = createRequire(import.meta.url); const R = require('../js/rrg.js');
+const fx = JSON.parse(fs.readFileSync(new URL('./fixture.json', import.meta.url)));
+const out = R.rrg(fx.price, fx.bench, fx.n);
+for (const k of ['rs', 'x', 'y']) fx[k].forEach((v, i) => { const w = out[k][i];
+  if (v == null) assert.strictEqual(w, null, `${k}[${i}]`); else assert.ok(Math.abs(v - w) < 1e-9 * Math.abs(v), `${k}[${i}] ${v} != ${w}`) });
+assert.deepStrictEqual(R.weekEnds(['2026-10-05', '2026-10-06', '2026-10-09', '2026-10-12', '2026-10-13']), [2, 4]);
+assert.deepStrictEqual(R.weekEnds(['2025-12-31', '2026-01-02', '2026-01-05']), [1, 2]);
+assert.strictEqual(R.quadrant(101, 99), 'W');
+assert.strictEqual(R.pyRound(2.5), 2); assert.strictEqual(R.pyRound(3.5), 4); assert.strictEqual(R.pyRound(26/3), 9);
+console.log('rrg.js: paridade com Python OK');
