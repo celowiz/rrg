@@ -23,3 +23,10 @@ python -m http.server 8000   # http://localhost:8000
 
 ## Analytics
 GA4 `G-QCBFGR39WG`, `content_group: rrg`. Eventos: `preset_select`, `free_mode_add`, `benchmark_change`, `play_toggle`, `asset_highlight`, `control_change`, `share_link`, `png_export`, `outbound_click`.
+
+## v2
+- "O que mudou esta semana", painel de detalhe com séries de RS-Ratio/RS-Momentum e preço vs benchmark.
+- Histórico desde 2018 (Covid incluso), seletor de data e "momentos históricos".
+- Eixos com escala independente, link de compartilhamento com data/ativo/idioma, PT/EN, tour guiado (`?notour` desativa), imagem Open Graph (`og.png`).
+- O script descarta o dia corrente antes de ~18:30 BRT para não publicar preços intradiários.
+- Novos eventos GA4: `change_click`, `date_pick`, `moment_select`, `language_toggle`, `tour_start`, `tour_step`, `tour_dismiss`, `tour_complete`.
