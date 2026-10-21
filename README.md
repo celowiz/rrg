@@ -12,7 +12,7 @@ App estático e interativo de **Relative Rotation Graph** com dados reais, publi
   - Benchmark dos modelos dos EUA: **SPY** (retorno total, compatível com preços ajustados das ações/ETFs). `^GSPC` também fica disponível no modo livre.
 - O navegador calcula o RRG (`js/rrg.js`) a partir dos preços, por isso o modo livre aceita qualquer combinação do universo.
 - Fórmulas (aproximação pública do método JdK) documentadas em `scripts/rrg.py`; `js/rrg.js` é uma porta fiel, verificada em `tests/rrg.test.mjs` contra a fixture gerada pelos testes Python.
-- GitHub Actions (`.github/workflows/pages.yml`): testes → dados → Pages, em todo push, manualmente e de segunda a sexta às 19:30 (BRT).
+- GitHub Actions (`.github/workflows/pages.yml`): testes → dados → Pages, em todo push, manualmente e de segunda a sexta às 19:07 (BRT), com um cron reserva às 21:07 que só refaz o build se o das 19:07 ainda não tiver publicado. Chamadas à B3 e ao Yahoo têm novas tentativas com espera crescente.
 
 ## Rodar localmente
 ```bash
