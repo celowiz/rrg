@@ -10,22 +10,23 @@ import yfinance as yf
 sys.path.insert(0, os.path.dirname(__file__))
 from universe import *
 from rrg import geometric_basket
+from net import retry
 
 START = dt.date(2018, 7, 1)  # mock v2: histórico estendido para cobrir Covid (mar/2020)
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "data")
 B3_URL = "https://sistemaswebb3-listados.b3.com.br/indexStatisticsProxy/IndexCall/GetPortfolioDay/"
 
+def b3_get(q):
+    r = requests.get(B3_URL + q, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+    r.raise_for_status()
+    return r.json()
+
 def b3_index(code):
     pts = {}
     for year in range(START.year, dt.date.today().year + 1):
         q = base64.b64encode(json.dumps({"language": "pt-br", "index": code, "year": str(year)}).encode()).decode()
-        for attempt in range(3):
-            try:
-                r = requests.get(B3_URL + q, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
-                r.raise_for_status(); data = r.json(); break
-            except Exception as e:
-                if attempt == 2: raise
-                time.sleep(2 + attempt * 3)
+        # a API da B3 falha de forma intermitente: 4 tentativas, esperas de 3, 9 e 27 s
+        data = retry(lambda: b3_get(q), what=f"B3 {code} {year}")
         for row in data.get("results", []):
             for m in range(1, 13):
                 v = row.get(f"rateValue{m}")
@@ -38,8 +39,14 @@ def b3_index(code):
         raise RuntimeError(f"B3 {code}: só {len(pts)} pontos")
     return pd.Series(pts).sort_index()
 
-def yf_batch(symbols):
+def yf_download(symbols):
     df = yf.download(symbols, start=START.isoformat(), auto_adjust=True, progress=False, threads=True, group_by="column")
+    if df is None or df.empty:
+        raise RuntimeError("Yahoo Finance devolveu vazio")
+    return df
+
+def yf_batch(symbols):
+    df = retry(lambda: yf_download(symbols), what=f"Yahoo ({len(symbols)} símbolos)")
     close = df["Close"] if isinstance(df.columns, pd.MultiIndex) else df[["Close"]].rename(columns={"Close": symbols[0]})
     return {s: close[s].dropna() for s in close.columns if close[s].dropna().size > 200}
 
@@ -47,10 +54,15 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     series, info, notes = {}, {}, []
     # 1) índices B3
+    b3_down = 0  # depois de 2 índices seguidos sem resposta, não insiste na B3 (o cron reserva tenta de novo)
     for code, name in B3_INDICES.items():
         try:
+            if b3_down >= 2:
+                raise ConnectionError("B3 fora do ar nesta execução")
             series[code] = b3_index(code); info[code] = {"name": name, "group": "idx_br", "source": "B3"}
+            b3_down = 0
         except Exception as e:
+            b3_down += 1
             fb = B3_FALLBACK.get(code)
             notes.append(f"{code}: B3 indisponível ({type(e).__name__}); " + (f"usando {fb} (Yahoo) como substituto" if fb else "série omitida"))
             if fb:
