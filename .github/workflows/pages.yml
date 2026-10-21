@@ -33,6 +33,9 @@ jobs:
           node tests/rrg.test.mjs
       - name: Baixar dados
         run: python scripts/fetch_data.py _site/data
+      # Resumo pequeno (data/summary.json) lido pela página Mercado Hoje do portfólio
+      - name: Resumo para o portfólio
+        run: python scripts/summary.py _site/data
       - name: Montar site
         run: |
           cp -r index.html css js og.png favicon.svg favicon-32.png favicon.ico apple-touch-icon.png _site/

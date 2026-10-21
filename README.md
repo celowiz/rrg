@@ -5,6 +5,7 @@ App estático e interativo de **Relative Rotation Graph** com dados reais, publi
 
 ## Como funciona
 - `scripts/fetch_data.py` baixa fechamentos diários (≈4 anos) e grava `data/prices.json` + `data/meta.json`.
+- `scripts/summary.py` grava `data/summary.json` (~2 KB): quadrantes semanais dos setores B3 × Ibovespa com rastro de 5 semanas e os últimos fechamentos do S&P 500 e do dólar. É o que a página [Mercado Hoje](https://celowiz.github.io/mercado-hoje/) do portfólio lê.
   - **B3** (API pública de estatísticas de índices): Ibovespa, IFIX, IFNC, IMAT, ICON, IEEX, UTIL, IMOB, INDX, SMLL, IDIV.
   - **Yahoo Finance** (`yfinance`, fechamento ajustado): ações BR (units tratadas como ações), FIIs, ações e ETFs dos EUA, SPDR setoriais, índices EUA.
   - Fallbacks se a B3 falhar: IBOV→`^BVSP`, IFIX→`XFIX11.SA`, SMLL→`SMAL11.SA`, IDIV→`DIVO11.SA`. Índices setoriais sem fallback (não há ETF setorial BR líquido); séries ausentes ficam listadas em `meta.notes` e aparecem na página.
@@ -18,6 +19,7 @@ App estático e interativo de **Relative Rotation Graph** com dados reais, publi
 pip install -r requirements.txt
 python -m pytest -q tests && node tests/rrg.test.mjs
 python scripts/fetch_data.py data
+python scripts/summary.py data
 python -m http.server 8000   # http://localhost:8000
 ```
 
