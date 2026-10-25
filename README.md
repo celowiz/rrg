@@ -1,5 +1,9 @@
 # RRG · Gráfico de Rotação Relativa
 
+**▶ Abrir o app: [celowiz.github.io/rrg](https://celowiz.github.io/rrg/)**
+
+[![RRG: setores da B3 contra o Ibovespa](docs/screenshot.png)](https://celowiz.github.io/rrg/)
+
 App estático e interativo de **Relative Rotation Graph** com dados reais, publicado em
 **https://celowiz.github.io/rrg/**. Projeto educativo do portfólio de [Marcelo Wizenberg](https://celowiz.github.io/), sem recomendação de investimento.
 
@@ -12,7 +16,7 @@ App estático e interativo de **Relative Rotation Graph** com dados reais, publi
   - Benchmark dos modelos dos EUA: **SPY** (retorno total, compatível com preços ajustados das ações/ETFs). `^GSPC` também fica disponível no modo livre.
 - O navegador calcula o RRG (`js/rrg.js`) a partir dos preços, por isso o modo livre aceita qualquer combinação do universo.
 - Fórmulas (aproximação pública do método JdK) documentadas em `scripts/rrg.py`; `js/rrg.js` é uma porta fiel, verificada em `tests/rrg.test.mjs` contra a fixture gerada pelos testes Python.
-- GitHub Actions (`.github/workflows/pages.yml`): testes → dados → Pages, em todo push, manualmente e de segunda a sexta às 19:07 (BRT), com um cron reserva às 21:07 que só refaz o build se o das 19:07 ainda não tiver publicado. Chamadas à B3 e ao Yahoo têm novas tentativas com espera crescente.
+- GitHub Actions (`.github/workflows/pages.yml`): testes → dados → Pages, em todo push, manualmente e de segunda a sexta às 19:07 (BRT), com crons reserva às 21:07 e às 08:17 do dia seguinte que só refazem o build se o site publicado ainda não tiver o último pregão (o gate compara a data dos dados, `as_of`, com o pregão esperado; `scripts/backup_gate.py`). Chamadas à B3 e ao Yahoo têm novas tentativas com espera crescente.
 
 ## Rodar localmente
 ```bash
@@ -32,3 +36,6 @@ GA4 `G-QCBFGR39WG`, `content_group: rrg`. Eventos: `preset_select`, `free_mode_a
 - Eixos com escala independente, link de compartilhamento com data/ativo/idioma, PT/EN, tour guiado (`?notour` desativa), imagem Open Graph (`og.png`).
 - O script descarta o dia corrente antes de ~18:30 BRT para não publicar preços intradiários.
 - Novos eventos GA4: `change_click`, `date_pick`, `moment_select`, `language_toggle`, `tour_start`, `tour_step`, `tour_dismiss`, `tour_complete`.
+
+## Licença
+Código sob licença [MIT](LICENSE). Dados de terceiros (B3, Yahoo Finance) seguem os termos de cada fonte.

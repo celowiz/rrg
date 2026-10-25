@@ -38,7 +38,7 @@ function draw(){
  qr.forEach(([k,x,y,w,hh])=>{h+=`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="${Q[k].c}" opacity=".06"/>`});
  const lab=(k,x,y,a)=>`<text x="${x}" y="${y}" text-anchor="${a}" fill="${Q[k].c}" font-family="ui-monospace,monospace" font-size="12" letter-spacing="1.5" opacity=".85">${Q[k].n.toUpperCase()}</text>`;
  h+=lab('I',m.l+10,m.t+20,'start')+lab('L',W-m.r-10,m.t+20,'end')+lab('G',m.l+10,H-m.b-12,'start')+lab('W',W-m.r-10,H-m.b-12,'end');
- const stx=niceStep(ex),sty=niceStep(ey),F='font-size="10" font-family="ui-monospace,monospace" fill="#71717a"';
+ const stx=niceStep(ex),sty=niceStep(ey),F='font-size="10" font-family="ui-monospace,monospace" fill="#8a8a93"';
  for(let k=Math.ceil(-ex/stx);k*stx<=ex+1e-9;k++){const v=100+k*stx,X=sx(v);h+=`<line x1="${X}" x2="${X}" y1="${m.t}" y2="${H-m.b}" stroke="#1c1c1f"/><text x="${X}" y="${H-m.b+16}" text-anchor="middle" ${F}>${tickFmt(v,stx)}</text>`}
  for(let k=Math.ceil(-ey/sty);k*sty<=ey+1e-9;k++){const v=100+k*sty,Y=sy(v);h+=`<line y1="${Y}" y2="${Y}" x1="${m.l}" x2="${W-m.r}" stroke="#1c1c1f"/><text x="${m.l-8}" y="${Y+3}" text-anchor="end" ${F}>${tickFmt(v,sty)}</text>`}
  h+=`<line x1="${cx}" x2="${cx}" y1="${m.t}" y2="${H-m.b}" stroke="#3f3f46"/><line y1="${cy}" y2="${cy}" x1="${m.l}" x2="${W-m.r}" stroke="#3f3f46"/>
@@ -67,7 +67,7 @@ function draw(){
 function stats(d){const i=st.end,q=quad(d.x[i],d.y[i]);let w=0;while(i-w>=0&&d.x[i-w]!=null&&quad(d.x[i-w],d.y[i-w])==q)w++;
  const dx=d.x[i]-d.x[i-1],dy=d.y[i]-d.y[i-1];return{q,w,ang:(Math.atan2(dy,dx)*180/Math.PI+360)%360,spd:Math.hypot(dx,dy),dist:Math.hypot(d.x[i]-100,d.y[i]-100)}}
 function tip(ev,t){const d=data.find(x=>x.t==t),s=stats(d),r=$('.chartcard').getBoundingClientRect(),el=$('#tip');
- el.innerHTML=`<b style="color:${d.c}">${t} · ${name(t)}</b><br><span style="color:#71717a">${desc(t)}</span><br>${Q[s.q].n} · RS-Ratio ${d.x[st.end].toFixed(2)} · RS-Mom. ${d.y[st.end].toFixed(2)}<br>${s.w} ${tr(st.tf=='w'?'u_w':'u_d')} ${tr('in_q')}`;
+ el.innerHTML=`<b style="color:${d.c}">${t} · ${name(t)}</b><br><span style="color:#8a8a93">${desc(t)}</span><br>${Q[s.q].n} · RS-Ratio ${d.x[st.end].toFixed(2)} · RS-Mom. ${d.y[st.end].toFixed(2)}<br>${s.w} ${tr(st.tf=='w'?'u_w':'u_d')} ${tr('in_q')}`;
  el.hidden=false;el.style.left=(ev.clientX-r.left+14)+'px';el.style.top=(ev.clientY-r.top+14)+'px'}
 function table(){const u=st.tf=='w'?'':'d';
  $('#tbl tbody').innerHTML=data.filter(d=>!st.hidden.has(d.t)&&st.end>=d.first).map(d=>[d,stats(d)]).sort((a,b)=>b[1].dist-a[1].dist).map(([d,s])=>`<tr data-t="${d.t}" class="${st.sel==d.t?'sel':''}"><td><span style="color:${d.c}">${d.t}</span><div class="nm">${name(d.t)}</div></td><td><span class="q"><i style="background:${Q[s.q].c}"></i>${Q[s.q].n}</span></td><td>${s.w}${u}</td><td><span class="arrow" style="transform:rotate(${-s.ang}deg)">➜</span> ${s.ang.toFixed(0)}°</td><td>${s.spd.toFixed(2)}</td><td>${s.dist.toFixed(2)}</td></tr>`).join('');
@@ -133,7 +133,7 @@ function bindUI(){
  $('#play').onclick=()=>{play(!st.playing);ga('play_toggle',{state:st.playing?'play':'pause',tf:st.tf})};$('#replay').onclick=()=>{ga('control_change',{control:'replay'});grow()};
  $('#share').onclick=()=>{writeHash();const u=location.href;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast(tr('copied')),()=>toast(u));ga('share_link',{preset:st.free?'free':st.p.id})};
  $('#png').onclick=()=>{ga('png_export',{preset:st.free?'free':st.p.id});const s=new XMLSerializer().serializeToString(svg),img=new Image(),c=document.createElement('canvas');c.width=1440;c.height=1240;
-  img.onload=()=>{const g=c.getContext('2d');g.drawImage(img,0,0,1440,1240);g.fillStyle='#71717a';g.font='22px monospace';g.fillText(`${st.free?tr('free'):pname(st.p)} · ${DT[st.end]} · celowiz.github.io/rrg`,110,40);const a=document.createElement('a');a.download=`rrg-${st.free?'livre':st.p.id}-${DT[st.end]}.png`;a.href=c.toDataURL();a.click();toast(tr('png_ok'))};
+  img.onload=()=>{const g=c.getContext('2d');g.drawImage(img,0,0,1440,1240);g.fillStyle='#8a8a93';g.font='22px monospace';g.fillText(`${st.free?tr('free'):pname(st.p)} · ${DT[st.end]} · celowiz.github.io/rrg`,110,40);const a=document.createElement('a');a.download=`rrg-${st.free?'livre':st.p.id}-${DT[st.end]}.png`;a.href=c.toDataURL();a.click();toast(tr('png_ok'))};
   img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg" width="720" height="620"'))};
  document.querySelectorAll('a[href^="http"]').forEach(a=>a.addEventListener('click',()=>ga('outbound_click',{link_url:a.href,link_text:a.textContent.trim().slice(0,60)})));
 }

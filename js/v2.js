@@ -72,9 +72,9 @@ function changes(){const el=$('#changes');if(!el||!data.length)return;const back
 function lineChart(el,series,opts){const W=320,H=opts.h||96,P=4,all=series.flatMap(s=>s.v).filter(v=>v!=null);let mn=Math.min(...all,opts.base??Infinity),mx=Math.max(...all,opts.base??-Infinity);if(mx-mn<1e-9){mx+=1;mn-=1}
  const n=series[0].v.length,X=k=>P+k/(n-1)*(W-2*P),Y=v=>H-P-(v-mn)/(mx-mn)*(H-2*P);let h='';
  if(opts.bands){const w=(W-2*P)/(n-1);opts.bands.forEach((q,k)=>{h+=`<rect x="${X(k)-w/2}" y="0" width="${w+.5}" height="${H}" fill="${QC[q]}" opacity=".16"/>`})}
- if(opts.base!=null)h+=`<line x1="0" x2="${W}" y1="${Y(opts.base)}" y2="${Y(opts.base)}" stroke="#52525b" stroke-dasharray="3 3"/><text x="${W-2}" y="${Y(opts.base)-3}" text-anchor="end" fill="#71717a" font-size="8" font-family="ui-monospace,monospace">${opts.base}</text>`;
+ if(opts.base!=null)h+=`<line x1="0" x2="${W}" y1="${Y(opts.base)}" y2="${Y(opts.base)}" stroke="#52525b" stroke-dasharray="3 3"/><text x="${W-2}" y="${Y(opts.base)-3}" text-anchor="end" fill="#8a8a93" font-size="8" font-family="ui-monospace,monospace">${opts.base}</text>`;
  series.forEach(s=>{h+=`<path d="${s.v.map((v,k)=>(k?'L':'M')+X(k).toFixed(1)+','+Y(v).toFixed(1)).join('')}" fill="none" stroke="${s.c}" stroke-width="${s.w||1.8}" ${s.dash?'stroke-dasharray="4 3"':''}/>`;h+=`<circle cx="${X(n-1)}" cy="${Y(s.v[n-1])}" r="2.6" fill="${s.c}"/>`});
- h+=`<text x="2" y="9" fill="#71717a" font-size="8" font-family="ui-monospace,monospace">${dateOf(opts.i0)}</text><text x="${W-2}" y="${H-3}" text-anchor="end" fill="#71717a" font-size="8" font-family="ui-monospace,monospace">${dateOf(opts.i1)}</text>`;
+ h+=`<text x="2" y="9" fill="#8a8a93" font-size="8" font-family="ui-monospace,monospace">${dateOf(opts.i0)}</text><text x="${W-2}" y="${H-3}" text-anchor="end" fill="#8a8a93" font-size="8" font-family="ui-monospace,monospace">${dateOf(opts.i1)}</text>`;
  el.setAttribute('viewBox',`0 0 ${W} ${H}`);el.innerHTML=h}
 function detail(){if(!st.sel||!data.find(x=>x.t==st.sel)){$('#detailBody').hidden=true;$('#detailHint').hidden=false;$('#detailHint').textContent=tr('det_hint');return}
  const d=data.find(x=>x.t==st.sel),s=stats(d),i1=st.end,i0=Math.max(d.first,i1-52),sl=a=>a.slice(i0,i1+1);$('#detailBody').hidden=false;$('#detailHint').hidden=true;
